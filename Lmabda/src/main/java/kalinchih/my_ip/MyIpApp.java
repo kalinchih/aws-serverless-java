@@ -20,7 +20,9 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
         response.request = request;
         response.serverIp = serverIp;
         String[] xForwardedForIps = StringUtils.split(request.xForwardedFor, ",");
-        if (xForwardedForIps.length > 0 && StringUtils.isNotBlank(xForwardedForIps[0])) {
+        if (xForwardedForIps.length >= 2) {
+            response.myIp = xForwardedForIps[xForwardedForIps.length - 2];
+        } else if (xForwardedForIps.length == 1) {
             response.myIp = xForwardedForIps[0];
         } else {
             //response.myIp = request.sourceIp;
