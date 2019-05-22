@@ -13,17 +13,13 @@
         })
         .then(function(myIpResponse) {
           document.getElementById("your_ip").innerHTML = myIpResponse["myIp"];
-          document.getElementById("your_ip").innerHTML = myIpResponse["myIp"];
-          document.getElementById("api_response").innerHTML = JSON.stringify(
-            myIpResponse
-          );
+          document.getElementById("remote_ip").innerHTML =
+            myIpResponse["serverIp"];
         });
     </script>
   </head>
   <body>
     <div><b>Your IP: </b> <span id="your_ip"></span></div>
-    <div><b>Remote IP: </b> <span id="server_ip"></span></div>
-
-    <div><b>API Response: </b> <span id="api_response"></span></div>
+    <div><b>Remote IP: </b> <span id="remote_ip"></span></div>
   </body>
 </html>
