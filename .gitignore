@@ -25,3 +25,4 @@ hs_err_pid*
 Lmabda/\.idea/
 
 *.iml
+Lmabda/target/
