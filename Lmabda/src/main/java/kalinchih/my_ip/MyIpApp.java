@@ -2,6 +2,7 @@ package kalinchih.my_ip;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -16,9 +17,15 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
             serverIp = e.getMessage();
         }
         MyIpResponse response = new MyIpResponse();
+        response.request = request;
         response.serverIp = serverIp;
-        response.myIp = request.sourceIp;
-        context.getLogger().log(String.format("sourceIp: %s, xForwardedFor: %s", request.sourceIp, request.xForwardedFor));
+        String[] xForwardedForIps = StringUtils.split(request.xForwardedFor, ",");
+        if (xForwardedForIps.length > 0 && StringUtils.isNotBlank(xForwardedForIps[0])) {
+            response.myIp = xForwardedForIps[0];
+        } else {
+            //response.myIp = request.sourceIp;
+            response.myIp = "";
+        }
         return response;
     }
 
