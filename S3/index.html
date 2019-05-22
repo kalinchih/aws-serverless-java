@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>My IP</title>
+    <META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE" />
+    <META HTTP-EQUIV="EXPIRES" CONTENT="0" />
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE" />
+    <script>
+      fetch("https://d3vk0wtt4ijln2.cloudfront.net/dev/my_ip_addresses")
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(myIpResponse) {
+          document.getElementById("your_ip").innerHTML = myIpResponse["myIp"];
+          document.getElementById("server_ip").innerHTML =
+            myIpResponse["serverIp"];
+          console.log();
+        });
+    </script>
+  </head>
+  <body>
+    <div><b>Your IP: </b> <span id="your_ip"></span></div>
+    <div><b>Remote IP: </b> <span id="server_ip"></span></div>
+  </body>
+</html>
