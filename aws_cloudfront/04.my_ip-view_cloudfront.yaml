@@ -10,6 +10,11 @@ Resources:
   ViewBucket:
     Type: AWS::S3::Bucket
     Properties:
+      Tags:
+        - Key: project
+          Value: !Sub "${application}"
+        - Key: env
+          Value: dev
       BucketName: !Sub "${application}-view"
       AccessControl: BucketOwnerFullControl
       VersioningConfiguration:
@@ -41,6 +46,11 @@ Resources:
   ViewCloudfront:
     Type: "AWS::CloudFront::Distribution"
     Properties:
+      Tags:
+        - Key: project
+          Value: !Sub "${application}"
+        - Key: env
+          Value: dev
       DistributionConfig:
         Origins:
           - DomainName: !Sub "${application}-view.s3.amazonaws.com"
@@ -57,16 +67,13 @@ Resources:
             - "GET"
             - "HEAD"
             - "OPTIONS"
-          Compress: false
+          Compress: true
           ForwardedValues:
             Cookies:
               Forward: none
             QueryString: false
           TargetOriginId: ViewBucket
           ViewerProtocolPolicy: redirect-to-https
-          DefaultTTL: 0
-          MaxTTL: 0
-          MinTTL: 0
         IPV6Enabled: false
 
   ViewCloudfrontOriginAccessIdentity:

@@ -6,8 +6,8 @@ This service is made by AWS serverless to display user's IP address.
 
 Scrrenshot
 
-- Website: https://ds5x69x17pp0m.cloudfront.net/index.html
-- API Gateway: https://d31ams200lac18.cloudfront.net/dev/my_ip_addresses
+- Website: https://d3w3g1kfb3wf7q.cloudfront.net/index.html
+- API Gateway: https://dgugs846yfp0a.cloudfront.net/dev/my_ip_addresses
 
 ## Design Document
 
@@ -28,7 +28,7 @@ Public website
 
 - CloudFront passes a 'AccessToken' by Origin Custom Headers (HeaderName: myip-authtoken).
 - Lambda function authorizes this AccessToken. If this AccessToken is not valid, the Lambda function returns 403 statusCode.
-- Stage URL: https://q7b56svwmg.execute-api.ap-northeast-1.amazonaws.com/dev/my_ip_addresses
+- Stage URL: https://3uzizhoukf.execute-api.ap-northeast-1.amazonaws.com/dev/my_ip_addresses
   - Directly access result: 403 (forbidden).
 
 ---
@@ -48,10 +48,13 @@ jacoco
 - Directly S3
 - Directly api
 - Forge X-Forwarded-For
+- upload lambda for server ip
 
 ### Performance Test
 
+WRK
 BlazeMeter
+https://www.dotcom-tools.com/website-speed-test.aspx
 
 ---
 

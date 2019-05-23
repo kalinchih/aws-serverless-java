@@ -10,6 +10,11 @@ Resources:
   ArtifactBucket:
     Type: AWS::S3::Bucket
     Properties:
+      Tags:
+        - Key: project
+          Value: !Sub "${application}"
+        - Key: env
+          Value: dev
       BucketName: !Sub "${application}-artifact"
       AccessControl: BucketOwnerFullControl
       PublicAccessBlockConfiguration:

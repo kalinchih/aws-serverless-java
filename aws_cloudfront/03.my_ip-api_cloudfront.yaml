@@ -2,14 +2,23 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: CloudFront for Serverless API
 
 Parameters:
+  application:
+    Default: kalinchih-my-ip
+    Type: String
+
   apiDomainName:
-    Default: q7b56svwmg.execute-api.ap-northeast-1.amazonaws.com
+    Default: 3uzizhoukf.execute-api.ap-northeast-1.amazonaws.com
     Type: String
 
 Resources:
   ApiCloudfront:
     Type: "AWS::CloudFront::Distribution"
     Properties:
+      Tags:
+        - Key: project
+          Value: !Sub "${application}"
+        - Key: env
+          Value: dev
       DistributionConfig:
         Origins:
           - DomainName: !Sub "${apiDomainName}"
@@ -24,11 +33,11 @@ Resources:
         Enabled: "true"
         HttpVersion: "http2"
         DefaultCacheBehavior:
+          Compress: true
           AllowedMethods:
             - "GET"
             - "HEAD"
             - "OPTIONS"
-          Compress: false
           ForwardedValues:
             Cookies:
               Forward: none

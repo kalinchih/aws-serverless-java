@@ -49,12 +49,17 @@ Resources:
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Tags:
+        - Key: project
+          Value: !Sub "${application}"
+        - Key: env
+          Value: dev
       Code:
         S3Bucket: !Sub "${artifactBucket}"
         S3Key: !Sub "${artifactObjectName}"
       FunctionName: !Sub "${application}"
       Handler: !Sub "${handler}"
-      MemorySize: 128
+      MemorySize: 256
       Timeout: 15 # seconds
       Role: !GetAtt
         - LambdaExecutionRole
@@ -85,9 +90,6 @@ Resources:
     Properties:
       Name: !Sub "${application}"
       FailOnWarnings: true
-      EndpointConfiguration:
-        Types:
-          - REGIONAL
 
   ApiResource:
     Type: "AWS::ApiGateway::Resource"
@@ -175,13 +177,18 @@ Resources:
   ApiStage:
     Type: "AWS::ApiGateway::Stage"
     Properties:
+      Tags:
+        - Key: project
+          Value: !Sub "${application}"
+        - Key: env
+          Value: dev
       DeploymentId: !Ref ApiDeployment
       MethodSettings:
         - ResourcePath: !Sub "/${apiResource}"
           HttpMethod: GET
           MetricsEnabled: "true"
-          ThrottlingBurstLimit: 3
-          ThrottlingRateLimit: 3.0
+          ThrottlingBurstLimit: 100
+          ThrottlingRateLimit: 100.0
       RestApiId: !Ref Api
       StageName: !Sub "${stage}"
 
