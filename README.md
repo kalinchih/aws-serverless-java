@@ -59,6 +59,7 @@ BlazeMeter
 
 ## Source Codes
 
+.zip
 README.md
 comment
 unit test
