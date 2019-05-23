@@ -20,9 +20,17 @@ This service is made by AWS serverless to display user's IP address.
 
 ## Design Document
 
+### How to Get IP by Request Header?
+
+### How to Force S3 Requests to Go Trough CloudfFont?
+
+### How to Authorize Requests?
+
 ---
 
-## Test Plan & Test Cases
+## Test Report
+
+unit test, function test, and black box test, performance test
 
 ---
 
@@ -30,7 +38,16 @@ This service is made by AWS serverless to display user's IP address.
 
 ### api-lambda
 
+- Classes:
+  - MyIpApp
+  - MyIpRequest
+  - MyIpResponse
+  - ServerIpNotFoundError
+
 ### view
+
+- HTML:
+  - index.html:
 
 ---
 
