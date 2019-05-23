@@ -19,22 +19,18 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
             response.httpStatus = 403;
         } else {
             String serverIp = "";
+            String userIp = "";
             try {
                 serverIp = getServerIp();
+                userIp = getUserIp(request.xForwardedFor);
             } catch (ServerIpNotFoundError e) {
                 serverIp = e.getMessage();
+            } catch (UserIpNotFoundError e) {
+                userIp = e.getMessage();
             }
             response.request = request;
+            response.myIp = userIp;
             response.serverIp = serverIp;
-            String[] xForwardedForIps = StringUtils.split(request.xForwardedFor, ",");
-            if (xForwardedForIps.length >= 2) {
-                response.myIp = xForwardedForIps[xForwardedForIps.length - 2];
-            } else if (xForwardedForIps.length == 1) {
-                response.myIp = xForwardedForIps[0];
-            } else {
-                //response.myIp = request.sourceIp;
-                response.myIp = "";
-            }
             response.httpStatus = 200;
             long endMs = Instant.now().toEpochMilli();
             response.lambdaExecutionMs = endMs-startMs;
@@ -56,6 +52,17 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
             return inetAddress.getHostAddress();
         } catch (UnknownHostException e) {
             throw new ServerIpNotFoundError(e);
+        }
+    }
+
+    private String getUserIp(String xForwardedFor) throws UserIpNotFoundError {
+        String[] xForwardedForIps = StringUtils.split(xForwardedFor, ",");
+        if (xForwardedForIps.length >= 2) {
+            return xForwardedForIps[xForwardedForIps.length - 2];
+        } else if (xForwardedForIps.length == 1) {
+            return xForwardedForIps[0];
+        } else {
+            throw new UserIpNotFoundError(String.format("Cannot find IP from X-Forwarded-For: %s", xForwardedForIps));
         }
     }
 }
