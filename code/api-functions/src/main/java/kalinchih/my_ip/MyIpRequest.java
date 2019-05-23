@@ -5,6 +5,7 @@ public class MyIpRequest {
     // public String sourceIp;
     public String xForwardedFor;
     public String userAgent;
+    public String authToken;
 }
 
 

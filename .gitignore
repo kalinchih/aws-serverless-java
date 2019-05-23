@@ -27,3 +27,5 @@ Lmabda/\.idea/
 *.iml
 Lmabda/target/
 \.DS_Store
+
+code/api-functions/\.idea/
