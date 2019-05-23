@@ -57,10 +57,8 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
 
     private String getUserIp(String xForwardedFor) throws UserIpNotFoundError {
         String[] xForwardedForIps = StringUtils.split(xForwardedFor, ",");
-        if (xForwardedForIps.length >= 2) {
-            return xForwardedForIps[xForwardedForIps.length - 2];
-        } else if (xForwardedForIps.length == 1) {
-            return xForwardedForIps[0];
+        if (xForwardedForIps.length >= 3) {
+            return xForwardedForIps[xForwardedForIps.length - 3];
         } else {
             throw new UserIpNotFoundError(String.format("Cannot find IP from X-Forwarded-For: %s", xForwardedForIps));
         }
