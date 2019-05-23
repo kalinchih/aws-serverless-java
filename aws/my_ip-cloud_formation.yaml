@@ -31,10 +31,9 @@ Parameters:
     Default: my_ip_addresses
     Type: String
 
-
 Resources:
   LambdaExecutionRole:
-    Type: 'AWS::IAM::Role'
+    Type: "AWS::IAM::Role"
     Properties:
       RoleName: !Sub "${application}-lambda-execution_role"
       AssumeRolePolicyDocument:
@@ -45,9 +44,9 @@ Resources:
               Service:
                 - lambda.amazonaws.com
             Action:
-              - 'sts:AssumeRole'
+              - "sts:AssumeRole"
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 
   LambdaFunction:
     Type: AWS::Lambda::Function
@@ -73,18 +72,18 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref LambdaFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Join 
-        - ''
-        - - 'arn:aws:execute-api:'
-          - !Ref 'AWS::Region'
-          - ':'
-          - !Ref 'AWS::AccountId'
-          - ':'
+      SourceArn: !Join
+        - ""
+        - - "arn:aws:execute-api:"
+          - !Ref "AWS::Region"
+          - ":"
+          - !Ref "AWS::AccountId"
+          - ":"
           - !Ref Api
           - /*
-  
+
   Api:
-    Type: 'AWS::ApiGateway::RestApi'
+    Type: "AWS::ApiGateway::RestApi"
     Properties:
       Name: !Sub "${application}"
       FailOnWarnings: true
@@ -93,48 +92,48 @@ Resources:
           - REGIONAL
 
   ApiResource:
-    Type: 'AWS::ApiGateway::Resource'
+    Type: "AWS::ApiGateway::Resource"
     Properties:
       RestApiId: !Ref Api
-      ParentId: !GetAtt 
+      ParentId: !GetAtt
         - Api
         - RootResourceId
       PathPart: !Sub "${apiResource}"
 
   ApiMethodGet:
     DependsOn: LambdaPermission
-    Type: 'AWS::ApiGateway::Method'
+    Type: "AWS::ApiGateway::Method"
     Properties:
       AuthorizationType: NONE
       HttpMethod: GET
       Integration:
         Type: AWS
         IntegrationHttpMethod: POST
-        Uri: !Join 
-          - ''
-          - - 'arn:aws:apigateway:'
-            - !Ref 'AWS::Region'
-            - ':lambda:path/2015-03-31/functions/'
-            - !GetAtt 
+        Uri: !Join
+          - ""
+          - - "arn:aws:apigateway:"
+            - !Ref "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - !GetAtt
               - LambdaFunction
               - Arn
             - /invocations
         IntegrationResponses:
           - StatusCode: 200
             ResponseParameters:
-                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-                method.response.header.Access-Control-Allow-Origin: "'*'"          
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         RequestTemplates:
-          application/json: !Join 
-            - ''
+          application/json: !Join
+            - ""
             - - |
               - |
                 {
               - |
-                  "xForwardedFor": "$input.params().header.get('X-Forwarded-For')",
-                  "userAgent": "$input.params().header.get('User-Agent')",
-                  "authToken": "$input.params().header.get('myip-authtoken')"
+                "xForwardedFor": "$input.params().header.get('X-Forwarded-For')",
+                "userAgent": "$input.params().header.get('User-Agent')",
+                "authToken": "$input.params().header.get('myip-authtoken')"
               - |
                 }
       ResourceId: !Ref ApiResource
@@ -144,39 +143,39 @@ Resources:
           ResponseParameters:
             method.response.header.Access-Control-Allow-Headers: true
             method.response.header.Access-Control-Allow-Methods: true
-            method.response.header.Access-Control-Allow-Origin: true  
+            method.response.header.Access-Control-Allow-Origin: true
 
   ApiMethodOptions:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        ResourceId: !Ref ApiResource
-        RestApiId: !Ref Api
-        AuthorizationType: NONE
-        HttpMethod: OPTIONS
-        Integration:
-          Type: MOCK
-          IntegrationResponses:
-            - ResponseParameters:
-                method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-                method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-                method.response.header.Access-Control-Allow-Origin: "'*'"
-              ResponseTemplates:
-                application/json: ''
-              StatusCode: '200'
-          PassthroughBehavior: NEVER
-          RequestTemplates:
-            application/json: '{"statusCode": 200}'
-        MethodResponses:
-          - ResponseModels:
-              application/json: Empty
-            ResponseParameters:
-              method.response.header.Access-Control-Allow-Headers: true
-              method.response.header.Access-Control-Allow-Methods: true
-              method.response.header.Access-Control-Allow-Origin: true
-            StatusCode: '200'
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      ResourceId: !Ref ApiResource
+      RestApiId: !Ref Api
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      Integration:
+        Type: MOCK
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ""
+            StatusCode: "200"
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+      MethodResponses:
+        - ResponseModels:
+            application/json: Empty
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+          StatusCode: "200"
 
   ApiStage:
-    Type: 'AWS::ApiGateway::Stage'
+    Type: "AWS::ApiGateway::Stage"
     Properties:
       DeploymentId: !Ref ApiDeployment
       MethodSettings:
@@ -203,11 +202,11 @@ Resources:
     Properties:
       BucketName: !Sub "${application}-view"
       AccessControl: BucketOwnerFullControl
-      PublicAccessBlockConfiguration: 
-        BlockPublicAcls : true
-        BlockPublicPolicy : true
-        IgnorePublicAcls : true
-        RestrictPublicBuckets : true
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
       VersioningConfiguration:
         Status: Enabled
 
@@ -217,20 +216,20 @@ Resources:
       PolicyDocument:
         Id: ViewBucketPolicy
         Statement:
-        - Sid: 1
-          Effect: Allow
-          Principal:
-            CanonicalUser:
-              Fn::GetAtt:
-                - ViewCloudfrontOriginAccessIdentity
-                - S3CanonicalUserId
-          Action: s3:GetObject
-          Resource:
-            Fn::Join:
-            - ''
-            - - 'arn:aws:s3:::'
-              - Ref: ViewBucket
-              - "/*"
+          - Sid: 1
+            Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - ViewCloudfrontOriginAccessIdentity
+                  - S3CanonicalUserId
+            Action: s3:GetObject
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:s3:::"
+                  - Ref: ViewBucket
+                  - "/*"
       Bucket:
         Ref: ViewBucket
 
@@ -241,25 +240,24 @@ Resources:
         Comment: CloudFront OriginAccessIdentity
 
   ViewCloudfront:
-    Type: 'AWS::CloudFront::Distribution'
+    Type: "AWS::CloudFront::Distribution"
     Properties:
       DistributionConfig:
         Origins:
-        - DomainName: !Sub "${application}-view.s3.amazonaws.com"
-          Id: ViewBucket
-          S3OriginConfig:
-            OriginAccessIdentity:
-              !Join
-              - ''
-              - - 'origin-access-identity/cloudfront/'
-                - !Ref 'ViewCloudfrontOriginAccessIdentity'
-        Enabled: 'true'
+          - DomainName: !Sub "${application}-view.s3.amazonaws.com"
+            Id: ViewBucket
+            S3OriginConfig:
+              OriginAccessIdentity: !Join
+                - ""
+                - - "origin-access-identity/cloudfront/"
+                  - !Ref "ViewCloudfrontOriginAccessIdentity"
+        Enabled: "true"
         HttpVersion: "http2"
         DefaultCacheBehavior:
           AllowedMethods:
-          - "GET"
-          - "HEAD"
-          - "OPTIONS"
+            - "GET"
+            - "HEAD"
+            - "OPTIONS"
           Compress: false
           ForwardedValues:
             Cookies:
@@ -271,4 +269,3 @@ Resources:
           MaxTTL: 0
           MinTTL: 0
         IPV6Enabled: false
-
