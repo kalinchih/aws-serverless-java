@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: 2010-09-09
+# lambda cloudwatch log
+# api gateway cors
+Parameters:
+  stage:
+    Default: dev
+    Description: api stage
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+
+  artifactBucket:
+    Default: kalinchih-my-ip-artifacts
+    Type: String
+
+  artifactObjectName:
+    Default: my_ip-get_http_request_ip-1.0-SNAPSHOT-jar-with-dependencies.jar
+    Type: String
+
+  application:
+    Default: test-my-ip
+    Type: String
+
+  handler:
+    Default: kalinchih.my_ip.MyIpApp::handleRequest
+    Type: String
+
+  path:
+    Default: my_ip_addresses
+    Type: String
+
+Resources:
+  LambdaFunctionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub "${application}-lambda-execution_roleWHO"
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: !Sub "${artifactBucket}"
+        S3Key: !Sub "${artifactObjectName}"
+      FunctionName: !Sub "${application}"
+      Handler: !Sub "${handler}"
+      MemorySize: 128
+      Timeout: 15 # seconds
+      Role: !GetAtt
+        - LambdaFunctionRole
+        - Arn
+      Runtime: java8
+
+  ## give the /my_ip_addresses api gateway resource permission to execute the lambda
+  ApiGatewayInvokeApiGetLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    DependsOn:
+      - Api
+      - LambdaFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref LambdaFunction
+      Principal: apigateway.amazonaws.com
+      ## * below allows the Aws Console API Gateway Test to work.
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/GET/${path}"
+
+  ## create the deployment of a stage (so that the stage is published to an https url)
+  ApiDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    Properties:
+      Description: !Sub "deployment of stage ${stage}"
+      RestApiId:
+        Ref: Api
+
+  ## create the stage
+  ApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: ApiDeployment
+      Description: !Sub "stage for ${stage}"
+      MethodSettings:
+        - ResourcePath: !Sub "/${path}"
+          HttpMethod: GET
+          MetricsEnabled: "true"
+          ThrottlingBurstLimit: 3
+          ThrottlingRateLimit: 3.0
+      RestApiId:
+        Ref: Api
+      StageName: !Sub "${stage}"
+
+  Api:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Sub "${application}"
+      Description: !Sub "${application} rest api"
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      FailOnWarnings: true
+      Body:
+        swagger: "2.0"
+        info:
+          version: "2017-03-30T22:50:37Z"
+          title: "${application}"
+        host: !Sub "application.execute-api.ap-northeast-1.amazonaws.com"
+        basePath: !Sub "/${stage}"
+        schemes:
+          - "https"
+        paths:
+          /my_ip_addresses:
+            get:
+              consumes:
+                - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                  schema:
+                    $ref: "#/definitions/Empty"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseTemplates:
+                      application/json: ""
+                requestTemplates:
+                  application/json: '{"xForwardedFor":"$input.params().header.get(''X-Forwarded-For'')","userAgent":"$input.params().header.get(''User-Agent'')","authToken":"$input.params().header.get(''myip-authtoken'')"}'
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${application}/invocations"
+                passthroughBehavior: "WHEN_NO_TEMPLATES"
+                httpMethod: "POST"
+                contentHandling: "CONVERT_TO_TEXT"
+                type: "aws"
+        definitions:
+          Empty:
+            type: "object"
