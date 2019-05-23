@@ -49,8 +49,6 @@ jacoco
 - Directly api
 - Forge X-Forwarded-For
 
-### Black Box Test
-
 ### Performance Test
 
 BlazeMeter
