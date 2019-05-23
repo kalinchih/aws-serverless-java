@@ -6,4 +6,5 @@ public class MyIpResponse {
     public String myIp;
     public MyIpRequest request;
     public int httpStatus;
+    public long lambdaExecutionMs;
 }

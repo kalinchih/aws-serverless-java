@@ -6,6 +6,7 @@
     <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script>
+      let startMs = new Date().getTime();
       fetch("https://d3vk0wtt4ijln2.cloudfront.net/dev/my_ip_addresses")
         .then(function(response) {
           let myIpResponse = response.json();
@@ -15,11 +16,32 @@
           document.getElementById("your_ip").innerHTML = myIpResponse["myIp"];
           document.getElementById("remote_ip").innerHTML =
             myIpResponse["serverIp"];
+          document.getElementById("lambda_exec_ms").innerHTML =
+            myIpResponse["lambdaExecutionMs"] + "ms";
+          let endMs = new Date().getTime();
+          let pageLoadMs = endMs - startMs;
+          document.getElementById("page_load_ms").innerHTML = `${pageLoadMs}ms`;
         });
     </script>
   </head>
   <body>
-    <div><b>Your IP: </b> <span id="your_ip">fetching...</span></div>
+    <div>
+      <b>Your IP: </b> <span id="your_ip">fetching...</span>
+      <span>
+        (verify it:
+        <a href="https://www.whatismyip.com/" target="_blank">whatismyip.com</a
+        >)
+      </span>
+    </div>
+
     <div><b>Remote IP: </b> <span id="remote_ip">fetching...</span></div>
+    <div>
+      <b>Lambda Execution Milliseconds: </b>
+      <span id="lambda_exec_ms">fetching...</span>
+    </div>
+    <div>
+      <b>Page Load Milliseconds: </b>
+      <span id="page_load_ms">calculating...</span>
+    </div>
   </body>
 </html>
