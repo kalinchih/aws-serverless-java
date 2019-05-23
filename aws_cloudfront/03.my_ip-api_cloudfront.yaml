@@ -2,8 +2,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: CloudFront for Serverless API
 
 Parameters:
-  apiDomaindName:
-    Default: g0c4lg49ea.execute-api.ap-northeast-1.amazonaws.com
+  apiDomainName:
+    Default: q7b56svwmg.execute-api.ap-northeast-1.amazonaws.com
     Type: String
 
 Resources:
@@ -12,7 +12,7 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: !Sub "${apiDomaindName}"
+          - DomainName: !Sub "${apiDomainName}"
             Id: ApiOrigin
             CustomOriginConfig:
               HTTPPort: "80"

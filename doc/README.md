@@ -1,17 +1,37 @@
-## View (S3)
+# What's My IP
 
-- CloudFront URL: https://d2vr4rokdjnjeb.cloudfront.net/index.html
+This service is made by AWS serverless to display user's IP address.
+
+## Demo Website
+
+- CloudFront URL: https://ds5x69x17pp0m.cloudfront.net/index.html
 - S3 Object URL: https://s3-ap-northeast-1.amazonaws.com/kalinchih-my-ip-view/index.html
+  - Directly access result: AccessDenied.
 
-## API Gateway
+---
 
-- CloudFront URL: https://d1ckkwv3a94kwc.cloudfront.net/dev/my_ip_addresses
-  - Origin Custom Headers:
-    - myip-authtoken: AuthTokenFromCloudFront
-    - auth by Lambda
-- Stage URL: https://g0c4lg49ea.execute-api.ap-northeast-1.amazonaws.com/dev/my_ip_addresses
-  - Directly access: 403 (forbidden)
+## Demo API Gateway
 
-## Another CloudFront
+- CloudFront URL: https://d31ams200lac18.cloudfront.net/dev/my_ip_addresses
+  - CloudFront passes a 'AccessToken' by Origin Custom Headers (HeaderName: myip-authtoken).
+  - Lambda function authorizes this AccessToken. If this AccessToken is not valid, the Lambda function returns 403 statusCode.
+- Stage URL: https://q7b56svwmg.execute-api.ap-northeast-1.amazonaws.com/dev/my_ip_addresses
+  - Directly access result: 403 (forbidden).
 
-http://d1wgiepc0c6db4.cloudfront.net/index.html -> view3
+## Design Document
+
+---
+
+## Test Plan & Test Cases
+
+---
+
+## Source Codes
+
+### api-lambda
+
+### view
+
+---
+
+## Deployment Procedures
