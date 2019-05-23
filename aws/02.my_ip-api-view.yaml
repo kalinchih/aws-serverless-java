@@ -1,9 +1,15 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: >-
-  AWS CloudFormation sample template that create a single Lambda function
-  behind an API Gateway with CORS enabled
+Description: Serverless API without CloudFront, View bucket with CloudFront
 
 Parameters:
+  application:
+    Default: kalinchih-my-ip
+    Type: String
+
+  apiResource:
+    Default: my_ip_addresses
+    Type: String
+
   stage:
     Default: dev
     Description: api stage
@@ -12,23 +18,15 @@ Parameters:
     MaxLength: 255
 
   artifactBucket:
-    Default: kalinchih-my-ip-artifacts
+    Default: kalinchih-my-ip-artifact
     Type: String
 
   artifactObjectName:
     Default: my_ip-get_http_request_ip-1.0-SNAPSHOT-jar-with-dependencies.jar
     Type: String
 
-  application:
-    Default: test-my-ip
-    Type: String
-
   handler:
     Default: kalinchih.my_ip.MyIpApp::handleRequest
-    Type: String
-
-  apiResource:
-    Default: my_ip_addresses
     Type: String
 
 Resources:
