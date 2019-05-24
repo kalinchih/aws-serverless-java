@@ -1,4 +1,4 @@
-# What's My IP
+# What is My IP
 
 This service is made by AWS serverless to display user's IP address.
 
