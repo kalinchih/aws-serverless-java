@@ -19,8 +19,10 @@
 
 ### Unit Tests
 
-- [TBD](TBD): the unit test class.
-- [TBD](Codecoverage): unit test coverage report.
+- [MyIpAppTest](api-lambda/src/test/java/kalinchih/my_ip/test/MyIpAppTest.java): the unit test class.
+- Coverage:
+  - Class: 80%, method: 88.9%, line: 84.2%
+  - [Coverage report](api-lambda/coverage/index.html)
 
 ### How to Build It?
 
