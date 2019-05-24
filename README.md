@@ -75,7 +75,7 @@ Please refer [/code/README.md](code/README.md) for codes, unit tests and build.
 
 ## Test Report
 
-Please refer [/test_report.pdf](test_report.pdf) for functional and performance test cases and results.
+Please refer [/test/test_report.pdf](test/test_report.pdf) for functional and performance test cases and results.
 
 ---
 
