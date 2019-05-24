@@ -2,20 +2,24 @@
 
 This service is made by AWS serverless to display user's IP address.
 
-## Demo
+## Demo URLs and Screenshots
 
 - Website URL: https://d3w3g1kfb3wf7q.cloudfront.net/index.html
 - Web API URL: https://dgugs846yfp0a.cloudfront.net/dev/my_ip_addresses
 
+![Website & Web API](img/screenshot-1.png "Website & Web API")
+![Web API response](img/screenshot-2.png "Web API response")
+
 ## Design
 
-Topology
+![Serverless Topology](img/aws-serverless.png "Serverless Topology")
 
 ### Components
 
 - Web API:
   - CloudFront:
-    - provide URL for end-user (in front of API Gateway stage URL).
+    - provide URL for end-user (proxy pass the request to API Gateway stage URL).
+    - redirect HTTP to HTTPs.
     - no cache TTL.
     - pass the 'access_token' to Web API by 'Origin Custom Headers'.
   - API Gateway:
@@ -27,7 +31,8 @@ Topology
     - fetch the user and client IP addresses.
 - Website:
   - CloudFront:
-    - provide URL for end-user (in front of S3 website bucket).
+    - provide URL for end-user (proxy pass the request to S3 website bucket).
+    - redirect HTTP to HTTPs.
     - enable cache and object compression.
   - S3:
     - contains website artifacts.
@@ -52,106 +57,54 @@ Topology
 
 ### How to Authorize Requests?
 
-Public website
+This is a public website so using the most efficient cost/performance solutions.
 
-- CloudFront passes a 'AccessToken' by Origin Custom Headers (HeaderName: myip-authtoken).
+- CloudFront passes a 'AccessToken' by Origin Custom Headers (header name: myip-authtoken).
 - Lambda function authorizes this AccessToken. If this AccessToken is not valid, the Lambda function returns 403 statusCode.
+- The valid header value is only configured in CloudFront and Lambda function.
 
 ---
 
-## Test Report
+## Codes and Build
 
-test_report.pdf
-
-### Unit Test
-
-jacoco
-
-### Functional Test
-
-- S3 Object URL: https://s3-ap-northeast-1.amazonaws.com/kalinchih-my-ip-view/index.html
-
-  - Directly access result: AccessDenied.
-
-- Stage URL: https://3uzizhoukf.execute-api.ap-northeast-1.amazonaws.com/dev/my_ip_addresses
-
-  - Directly access result: 403 (forbidden).
-
-- Cloudfront web
-- Cloudfront API
-- Directly S3
-- Directly api
-- Forge X-Forwarded-For
-- upload lambda for server ip
-
-### Performance Test
-
-WRK
-BlazeMeter
-https://www.dotcom-tools.com/website-speed-test.aspx
+Please refer [/code/README.md](code/README.md) for codes, unit tests and build.
 
 ---
 
-## Source Codes
+## Test
 
-### Lambda Function for Web API
-
-#### Java Classes
-
-- MyIpApp: the Lambda handler class to retrieve user and server IP addresses.
-- MyIpRequest: to wrap the request.
-- MyIpResponse: to wrap the response.
-- ServerIpNotFoundError: to wrap the inner exception when something wrong in retrieving server IP.
-- UserIpNotFoundError: to wrap the error message when something wrong in retrieving user IP.
-
-#### How to Build It?
-
-Use the following [Maven](https://maven.apache.org/) command to run all unit tests and release a build.
-
-```
-mvn package
-```
-
-### Website Artifacts
-
-- Index.html: the UI to async invoke Web API to display user & server IP addresses.
-- favicon.ico: the website icon.
+Please refer [/test_report.pdf](test_report.pdf) for functional and performance test cases and results.
 
 ---
 
-## Environment Setup and 1st-time Deployment
+## Deployment
 
-### Step 1: Create the Lambda artifact S3 bucket and upload Lambda build
+### Environment Setup
 
-1. Use the [/aws_cloudfront/01.my_ip-code_bucket.yaml](aws_cloudfront/01.my_ip-code_bucket.yaml) to create a CloudFormation stack.
-2. Upload the Lambda build to this bucket.
+1. Create the Lambda artifact S3 bucket and upload Lambda build
 
-### Step 2: Create API and Lambda function
+> - Use the [/aws_cloudfront/01.my_ip-code_bucket.yaml](aws_cloudfront/01.my_ip-code_bucket.yaml) to create a CloudFormation stack.
+> - Upload the Lambda build to this bucket.
 
-1. Use the [/aws_cloudfront/02.my_ip-api.yaml](aws_cloudfront/02.my_ip-api.yaml) script to create a CloudFormation stack.
+2. Create API and Lambda function
 
-### Step 3: Setup CloudFront for web API
+> - Use the [/aws_cloudfront/02.my_ip-api.yaml](aws_cloudfront/02.my_ip-api.yaml) script to create a CloudFormation stack.
 
-1. Open the [/aws_cloudfront/03.my_ip-api_cloudfront.yaml](aws_cloudfront/03.my_ip-api_cloudfront.yaml) script and modify the 'apiDomainName' parameter by API stage domain name.
+3. Setup CloudFront for web API
 
-2. Run the [/aws_cloudfront/03.my_ip-api_cloudfront.yaml](aws_cloudfront/03.my_ip-api_cloudfront.yaml) script to create a CloudFormation stack.
+> - Open the [/aws_cloudfront/03.my_ip-api_cloudfront.yaml](aws_cloudfront/03.my_ip-api_cloudfront.yaml) script and modify the 'apiDomainName' parameter by API stage domain name.
+> - Use the [/aws_cloudfront/03.my_ip-api_cloudfront.yaml](aws_cloudfront/03.my_ip-api_cloudfront.yaml) script to create a CloudFormation stack.
 
-### Step 4: Create Website S3 bucket with CloudFront and upload website artifacts
+4. Create Website S3 bucket with CloudFront and upload website artifacts
 
-1. Use the [/aws_cloudfront/04.my_ip-view_cloudfront.yaml](aws_cloudfront/04.my_ip-view_cloudfront.yaml) script to create a CloudFormation stack.
+> - Use the [/aws_cloudfront/04.my_ip-view_cloudfront.yaml](aws_cloudfront/04.my_ip-view_cloudfront.yaml) script to create a CloudFormation stack.
+> - Upload website artifacts to the S3 bucket.
 
-2. Upload website artifacts to the S3 bucket.
+### New Feature or Change Deployment
 
----
-
-## New Feature or Change Deployment
-
-### Deploy Web API
-
-1. Upload the Lambda build to Lambda S3 bucket.
-2. Update the Lambda function by the S3 link.
-
-### Deploy Website
-
-1. Upload the new website artifacts to website S3 bucket.
-2. Create a CloundFront 'invalidation' to update CloudFront edge caches.
+- Deploy Web API
+  - Upload the Lambda build to Lambda S3 bucket.
+  - Update the Lambda function by the S3 link.
+- Deploy Website
+  - Upload the new website artifacts to website S3 bucket.
+  - Create a CloundFront 'invalidation' to update CloudFront edge caches.
