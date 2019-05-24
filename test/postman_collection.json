@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "d0ff518e-42c3-4f14-8984-7f8e01c7890c",
-		"name": "AWS-TAM-Kalin_Chih",
+		"_postman_id": "1190ad6d-1a5f-4e90-83ef-10b6aa6f3e78",
+		"name": "What is My IP - Web API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -10,6 +10,30 @@
 			"item": [
 				{
 					"name": "API-OK-001: Send HTTP GET request to Web API CloudFront distribution URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "01b0ea72-fade-4a21-b5f9-c4fde93fd370",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches myIp\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"myIp\");",
+									"});",
+									"pm.test(\"CORS headers\", function () {",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Methods\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -29,6 +53,30 @@
 				},
 				{
 					"name": "API-OK-002: Send HTTP GET request with forged X-Forwarded-For header to Web API CloudFront distribution URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5335e29f-09ed-4806-8de8-a194b9ab7785",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches myIp\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"myIp\");",
+									"});",
+									"pm.test(\"CORS headers\", function () {",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Methods\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -54,6 +102,30 @@
 				},
 				{
 					"name": "API-OK-003: Send HTTP GET request to Web API CloudFront distribution URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0cb17669-8ef7-48c2-8fe2-269020f6a245",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body matches myIp\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"myIp\");",
+									"});",
+									"pm.test(\"CORS headers\", function () {",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Methods\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -78,6 +150,31 @@
 			"item": [
 				{
 					"name": "API-Error-001: Send HTTPS GET request to Web API Gateway stage URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4532d749-ee93-405d-9d86-534780a60bdd",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body httpStatus 403\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.httpStatus).to.eql(403);",
+									"});",
+									"pm.test(\"CORS headers\", function () {",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Methods\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -97,6 +194,29 @@
 				},
 				{
 					"name": "API-Error-002: Send HTTPS GET request with invalid access_token to Web API Gateway stage URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9c7f4d36-03ee-420c-8719-e4ae7c3f168f",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body httpStatus 403\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.httpStatus).to.eql(403);",
+									"});",
+									"pm.test(\"CORS headers\", function () {",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
+									"    pm.response.to.have.header(\"Access-Control-Allow-Methods\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"header": [
@@ -122,6 +242,24 @@
 				},
 				{
 					"name": "API-Error-003: Send HTTPS request with unsupported metho to Web API Gateway stage URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "904a5f89-e516-471f-a6bf-1511946dbfd5",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"pm.test(\"Body message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Missing Authentication Token\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [

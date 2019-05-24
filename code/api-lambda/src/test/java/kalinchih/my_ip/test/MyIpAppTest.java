@@ -23,17 +23,12 @@ public class MyIpAppTest {
         MyIpApp myIpApp = new MyIpApp();
         String methodName = "authorized";
         // correct authToken
-        MyIpRequest request = new MyIpRequest();
-        request.authToken = "AuthTokenFromCloudFront";
-        Assert.assertEquals(true, Whitebox.invokeMethod(myIpApp, methodName, request));
+        Assert.assertEquals(true, Whitebox.invokeMethod(myIpApp, methodName, "AuthTokenFromCloudFront"));
         // null authToken
-        MyIpRequest requestWithNullAuthToken = new MyIpRequest();
-        requestWithNullAuthToken.authToken = null;
-        Assert.assertEquals(false, Whitebox.invokeMethod(myIpApp, methodName, requestWithNullAuthToken));
+
+        Assert.assertEquals(false, Whitebox.invokeMethod(myIpApp, methodName, null));
         // incorrect authToken
-        MyIpRequest requestWithIncorrectAuthToken = new MyIpRequest();
-        requestWithIncorrectAuthToken.authToken = "incorrect";
-        Assert.assertEquals(false, Whitebox.invokeMethod(myIpApp, methodName, requestWithIncorrectAuthToken));
+        Assert.assertEquals(false, Whitebox.invokeMethod(myIpApp, methodName, "incorrectAuthToken"));
     }
 
     @Test

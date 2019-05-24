@@ -14,14 +14,16 @@
 - [MyIpApp](api-lambda/src/main/java/kalinchih/my_ip/MyIpApp.java): the Lambda handler class to retrieve user and server IP addresses.
 - [MyIpRequest](api-lambda/src/main/java/kalinchih/my_ip/MyIpRequest.java): to wrap the request.
 - [MyIpResponse](api-lambda/src/main/java/kalinchih/my_ip/MyIpResponse.java): to wrap the response.
-- [ServerIpNotFoundError](api-lambda/src/main/java/kalinchih/my_ip/ServerIpNotFoundError.java): to wrap the inner exception when something wrong in retrieving server IP.
-- [UserIpNotFoundError](api-lambda/src/main/java/kalinchih/my_ip/UserIpNotFoundError.java): to wrap the error message when something wrong in retrieving user IP.
+- [ServerIpNotFoundError](api-lambda/src/main/java/kalinchih/my_ip/ServerIpNotFoundError.java): to wrap the inner exception when something wrong when retrieving server IP.
+- [UserIpNotFoundError](api-lambda/src/main/java/kalinchih/my_ip/UserIpNotFoundError.java): to wrap the error message when something wrong when retrieving user IP.
 
 ### Unit Tests
 
 - [MyIpAppTest](api-lambda/src/test/java/kalinchih/my_ip/test/MyIpAppTest.java): the unit test class.
 - Coverage:
-  - Class: 80%, method: 88.9%, line: 84.2%
+  - Class: 80%
+  - Method: 88.9%
+  - Line: 84.6%
   - [Coverage report](api-lambda/coverage/index.html)
 
 ### How to Build It?

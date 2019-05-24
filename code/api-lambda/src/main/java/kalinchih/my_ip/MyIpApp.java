@@ -12,10 +12,16 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
 
     public static final String AUTH_TOKEN_VALUE = "AuthTokenFromCloudFront";
 
+    /***
+     * Lambda entry method
+     * @param request request which prepared by API Gateway request Mapping Template
+     * @param context lambda context
+     * @return MyIpResponse contains myIp(userIp), serverIp, lambdaExecutionMs and MyIpRequest object (for trouble shooting)
+     */
     public MyIpResponse handleRequest(MyIpRequest request, Context context) {
         long startMs = Instant.now().toEpochMilli();
         MyIpResponse response = new MyIpResponse();
-        if (!authorized(request)) {
+        if (!authorized(request.authToken)) {
             response.httpStatus = 403;
         } else {
             String serverIp = "";
@@ -28,6 +34,8 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
             } catch (UserIpNotFoundError e) {
                 userIp = e.getMessage();
             }
+            // secure the authToken by removing it
+            request.authToken = null;
             response.request = request;
             response.myIp = userIp;
             response.serverIp = serverIp;
@@ -38,14 +46,24 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
         return response;
     }
 
-    private boolean authorized(MyIpRequest request){
-        if (request != null && StringUtils.equals(request.authToken, AUTH_TOKEN_VALUE)) {
+    /***
+     * Authorize the request by authToken
+     * @param authToken authToken witch defined/passed from CloudFront Origin Custom Headers
+     * @return true for authorized request
+     */
+    private boolean authorized(String authToken ){
+        if (StringUtils.equals(authToken, AUTH_TOKEN_VALUE)) {
            return true;
         } else {
             return false;
         }
     }
 
+    /***
+     * Get server IP
+     * @return server IP
+     * @throws ServerIpNotFoundError
+     */
     private String getServerIp() throws ServerIpNotFoundError {
         try {
             InetAddress inetAddress = InetAddress.getLocalHost();
@@ -55,9 +73,17 @@ public class MyIpApp implements RequestHandler<MyIpRequest, MyIpResponse> {
         }
     }
 
+    /***
+     * Get user IP
+     * @param xForwardedFor X-Forwarded-Fro request header
+     * @return user IP
+     * @throws UserIpNotFoundError
+     */
     private String getUserIp(String xForwardedFor) throws UserIpNotFoundError {
+        // The web API endpoint type is 'Edge optimized'. So the header value must contains 3 IP addresses at least.
+        // Split the header value by comma and get the 'third from last' IP address as the user IP.
         String[] xForwardedForIps = StringUtils.split(xForwardedFor, ",");
-        if (xForwardedForIps.length >= 3) {
+        if (xForwardedForIps != null && xForwardedForIps.length >= 3) {
             return xForwardedForIps[xForwardedForIps.length - 3];
         } else {
             throw new UserIpNotFoundError(String.format("Cannot find IP from X-Forwarded-For: %s", xForwardedForIps));
