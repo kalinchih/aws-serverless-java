@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "d0ff518e-42c3-4f14-8984-7f8e01c7890c",
+		"name": "AWS-TAM-Kalin_Chih",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Web API – Happy Cases",
+			"item": [
+				{
+					"name": "API-OK-001: Send HTTP GET request to Web API CloudFront distribution URL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{APICloudFrontDomain}}/dev/my_ip_addresses",
+							"protocol": "https",
+							"host": [
+								"{{APICloudFrontDomain}}"
+							],
+							"path": [
+								"dev",
+								"my_ip_addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API-OK-002: Send HTTP GET request with forged X-Forwarded-For header to Web API CloudFront distribution URL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Forwarded-For",
+								"value": "1.1.1.1, 2.2.2.2",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{APICloudFrontDomain}}/dev/my_ip_addresses",
+							"protocol": "https",
+							"host": [
+								"{{APICloudFrontDomain}}"
+							],
+							"path": [
+								"dev",
+								"my_ip_addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API-OK-003: Send HTTP GET request to Web API CloudFront distribution URL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{APICloudFrontDomain}}/dev/my_ip_addresses",
+							"protocol": "http",
+							"host": [
+								"{{APICloudFrontDomain}}"
+							],
+							"path": [
+								"dev",
+								"my_ip_addresses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Web API – Alternative Cases",
+			"item": [
+				{
+					"name": "API-Error-001: Send HTTPS GET request to Web API Gateway stage URL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{APIGatewayStageDomain}}/dev/my_ip_addresses",
+							"protocol": "https",
+							"host": [
+								"{{APIGatewayStageDomain}}"
+							],
+							"path": [
+								"dev",
+								"my_ip_addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API-Error-002: Send HTTPS GET request with invalid access_token to Web API Gateway stage URL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "myip-authtoken",
+								"value": "test",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{APIGatewayStageDomain}}/dev/my_ip_addresses",
+							"protocol": "https",
+							"host": [
+								"{{APIGatewayStageDomain}}"
+							],
+							"path": [
+								"dev",
+								"my_ip_addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API-Error-003: Send HTTPS request with unsupported metho to Web API Gateway stage URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "myip-authtoken",
+								"type": "text",
+								"value": "test"
+							}
+						],
+						"url": {
+							"raw": "https://{{APIGatewayStageDomain}}/dev/my_ip_addresses",
+							"protocol": "https",
+							"host": [
+								"{{APIGatewayStageDomain}}"
+							],
+							"path": [
+								"dev",
+								"my_ip_addresses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
